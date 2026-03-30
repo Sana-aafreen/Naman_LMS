@@ -1,16 +1,53 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import Topbar from "@/components/Topbar";
+import Sidebar from "@/components/Sidebar";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
+import Courses from "@/pages/Courses";
+import AIAssistant from "@/pages/AIAssistant";
+import TrainingMaterial from "@/pages/TrainingMaterial";
+import LeaveManagement from "@/pages/LeaveManagement";
+import Projects from "@/pages/Projects";
+import SOPLibrary from "@/pages/SOPLibrary";
+import HolidayCalendar from "@/pages/HolidayCalendar";
+import Medical from "@/pages/Medical";
+import MyProgress from "@/pages/MyProgress";
+import AdminDashboard from "@/pages/AdminDashboard";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const pages: Record<string, React.FC> = {
+  dashboard: Dashboard,
+  courses: Courses,
+  ai: AIAssistant,
+  training: TrainingMaterial,
+  leaves: LeaveManagement,
+  projects: Projects,
+  sop: SOPLibrary,
+  holidays: HolidayCalendar,
+  medical: Medical,
+  progress: MyProgress,
+  admin: AdminDashboard,
+};
+
+const Index: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+  const [activePage, setActivePage] = useState("dashboard");
+
+  if (!isAuthenticated) return <Login />;
+
+  const PageComponent = pages[activePage] || Dashboard;
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="h-screen flex flex-col overflow-hidden">
+      <Topbar />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar activePage={activePage} onNavigate={setActivePage} />
+        <main className="flex-1 overflow-y-auto p-6 bg-background">
+          <PageComponent />
+        </main>
+      </div>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
